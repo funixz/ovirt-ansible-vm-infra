@@ -4,12 +4,12 @@ oVirt Virtual Machine Infrastructure
 The `ovirt.vm-infra` role manages the virtual machine infrastructure in oVirt.
 This role also creates inventory of created virtual machines it defines if
 `wait_for_ip` is set to `true` and state of virtual machine is `running`.
-All defined virtual machine are part of `ovirt_vm` inventory group.
-Role also create `ovirt_tag_{tag_name}` groups if there are any
-tags assigned to the virtual machine and place all virtual machine with that tag
-to that inventory group.
+All defined virtual machines are part of `ovirt_vm` inventory group.
+Role also creates `ovirt_tag_{tag_name}` groups if there are any
+tags assigned to the virtual machine and places all virtual machines with that 
+tag into that inventory group.
 
-For example for following variable structure:
+For example, see the following variable structure:
 
 ```yaml
 vms:
@@ -22,10 +22,10 @@ vms:
     profile: myprofile
 ```
 
-The role will create inventory groups `ovirt_vm` where will be both virtual
-machines `myvm1` and `myvm2`. The role also create inventory groups `ovirt_tag_mytag1`
-with virtual machine `myvm1` and inventory group `ovirt_tag_mytag2` with virtual
-machine `myvm2`.
+..The role will create inventory group `ovirt_vm` in which will be both virtual
+machines `myvm1` and `myvm2`. The role also creates inventory group `ovirt_tag_mytag1`
+with virtual machine `myvm1` within, and inventory group `ovirt_tag_mytag2` with virtual
+machine `myvm2` within.
 
 Note
 ----
@@ -36,14 +36,14 @@ $ ansible-galaxy install ovirt.vm-infra
 ```
 
 This will download the role to the directory with the same name as you specified on the
-command line, in this case `ovirt.vm-infra`. But note that it is case sensitive, so if you specify
-for example `OVIRT.vm-infra` it will download the same role, but it will add it to the directory named
-`OVIRT.vm-infra`, so you later always have to use this role with upper case prefix. So be careful how
-you specify the name of the role on command line.
+command-line, in this case `ovirt.vm-infra`. Note that it is case sensitive, so if you specify,
+for example, `OVIRT.vm-infra` it will download the same role, but it will add it to the directory named
+`OVIRT.vm-infra`, so you later always have to use this role with upper case prefix. Do be careful how
+you specify the name of the role on command-line.
 
-For the RPM installation we install three legacy names `ovirt.vm-infra`, `oVirt.vm-infra` and `ovirt-vm-infra`.
-So you can use any of this name. This documentation and examples in this repository are using name `ovirt.vm-infra`.
-`oVirt.vm-infra` and `ovirt-vm-infra` role names are deprecated.
+For the RPM installation, we install three legacy names `ovirt.vm-infra`, `oVirt.vm-infra` and `ovirt-vm-infra`.
+As such, you can use any of those names. The documentation and examples in this repository are using the name `ovirt.vm-infra`.
+The `oVirt.vm-infra` and `ovirt-vm-infra` role name styles are deprecated.
 
 Requirements
 ------------
@@ -54,7 +54,7 @@ Requirements
 Limitations
 -----------
 
- * Does not support Ansible Check Mode (Dry Run).
+ * Does not support Ansible Check Mode (Dry Run / -C).
 
 Role Variables
 --------------
@@ -62,57 +62,57 @@ Role Variables
 | Name                           | Default value |                                              |
 |--------------------------------|---------------|----------------------------------------------|
 | vms                            | UNDEF         | List of dictionaries with virtual machine specifications.   |
-| affinity_groups                | UNDEF         | List of dictionaries with affinity groups specifications.   |
+| affinity_groups                | UNDEF         | List of dictionaries with affinity group specifications.   |
 | wait_for_ip                    | false         | If true, the playbook should wait for the virtual machine IP reported by the guest agent.  |
-| wait_for_ip_version            | v4            | Specify which IP version should be wait for. Either v4 or v6.  |
-| debug_vm_create                | false         | If true, logs the tasks of the virtual machine being created. The log can contain passwords. |
-| vm_infra_create_single_timeout | 180           | Time in seconds to wait for VM to be created and started (if state is running). |
-| vm_infra_create_poll_interval  | 15            | Polling interval. Time in seconds to wait between check of state of VM.  |
-| vm_infra_create_all_timeout    | vm_infra_create_single_timeout * (vms.length) | Total time to wait for all VMs to be created/started. |
-| vm_infra_wait_for_ip_retries   | 5             | Number of retries to check if VM is reporting it's IP address. |
-| vm_infra_wait_for_ip_delay     | 5             | Polling interval of IP address. Time in seconds to wait between check if VM reports IP address. |
+| wait_for_ip_version            | v4            | Specify which IP version to wait for (Either v4 or v6).  |
+| debug_vm_create                | false         | If true, logs the tasks of the virtual machines being created. The log may contain passwords. |
+| vm_infra_create_single_timeout | 180           | Time in seconds to wait for a VM to be created and started (if state is `running`). |
+| vm_infra_create_poll_interval  | 15            | Polling interval. The time in seconds to wait between checking the state of a VMs.  |
+| vm_infra_create_all_timeout    | vm_infra_create_single_timeout * (vms.length) | Total time (in seconds) to wait for all VMs to be created/ started. |
+| vm_infra_wait_for_ip_retries   | 5             | Number of retries when checking if a VM is reporting it's IP address. |
+| vm_infra_wait_for_ip_delay     | 5             | Polling interval of IP address. Time in seconds to wait between checking if a VM reports its IP address. |
 
 
-The `vms` and `profile` variables can contain following attributes, note that if you define same variable in both the value in `vms` has precendence:
+The `vms` and `profile` variables can contain the following attributes. Note that if you define the same variable in both, the value in `vms` has precendence:
 
 | Name               | Default value         |                                            |
 |--------------------|-----------------------|--------------------------------------------|
 | name               | UNDEF                 | Name of the virtual machine to create.     |
 | tag                | UNDEF                 | Name of the tag to assign to the virtual machine. Only administrator users can use this attribute.  |
-| cloud_init         | UNDEF                 | Dictionary with values for Unix-like Virtual Machine initialization using cloud init. See below <i>cloud_init</i> section for more detailed description. |
-| cloud_init_nics    | UNDEF                 | List of dictionaries representing network interafaces to be setup by cloud init. See below <i>cloud_init_nics</i> section for more detailed description. |
+| cloud_init         | UNDEF                 | Dictionary with values for Unix-like Virtual Machine initialization using cloud-init. See the below <i>cloud_init</i> section for more detailed description. |
+| cloud_init_nics    | UNDEF                 | List of dictionaries representing network interafaces to be setup by cloud-init. See the below <i>cloud_init_nics</i> section for more detailed description. |
 | profile            | UNDEF                 | Dictionary specifying the virtual machine hardware. See the table below.  |
-| state              | present               | Should the Virtual Machine be stopped, present or running. Takes precedence before state value in profile. |
+| state              | present               | Should the Virtual Machine be stopped, present or running. Takes precedence before `state` value in profile. |
 | nics               | UNDEF                 | List of dictionaries specifying the NICs of the virtual machine. See below for more detailed description.   |
-| cluster            | UNDEF                 | Name of the cluster where the virtual machine will be created. |
-| clone              | No                    | If yes then the disks of the created virtual machine will be cloned and independent of the template.  This parameter is used only when state is running or present and VM didn't exist before.  |
-| template           | Blank                 | Name of template that the virtual machine should be based on.   |
-| template_version   | UNDEF                 | Version number of the template to be used for VM. By default the latest available version of the template is used.   |
-| memory             | UNDEF                 | Amount of virtual machine memory.               |
+| cluster            | UNDEF                 | Name of the oVirt/ RHV cluster where the virtual machine will be created. |
+| clone              | No                    | If `yes` then the disks of the created VM will be cloned and independent of the template.  This parameter is used only when state is `running` or `present` and the VM doesn't already exist.  |
+| template           | Blank                 | Name of template from which the virtual machine is to be derived.   |
+| template_version   | UNDEF                 | Version number of the template to be used for the VM. By default the latest available version of the template is used.   |
+| memory             | UNDEF                 | Amount of virtual machine memory for the VM.               |
 | memory_max         | UNDEF                 | Upper bound of virtual machine memory up to which memory hot-plug can be performed. |
 | memory_guaranteed  | UNDEF                 | Amount of minimal guaranteed memory of the Virtual Machine. Prefix uses IEC 60027-2 standard (for example 1GiB, 1024MiB). <i>memory_guaranteed</i> parameter can't be lower than <i>memory</i> parameter. |
-| cores              | 1                     | Number of CPU cores used by the the virtual machine.          |
-| sockets            | UNDEF                 | Number of virtual CPUs sockets of the Virtual Machine.  |
-| cpu_shares         | UNDEF                 | Set a CPU shares for this Virtual Machine. |
-| cpu_threads        | UNDEF                 | Set a CPU threads for this Virtual Machine. |
-| disks              | UNDEF                 | List of dictionaries specifying the additional virtual machine disks. See below for more detailed description. |
+| cores              | 1                     | Set the number of CPU cores used by the the virtual machine. (number of cores per socket)          |
+| sockets            | UNDEF                 | Set the number of virtual CPU sockets of the virtual machine. (sockets contain cores)  |
+| cpu_shares         | UNDEF                 | Set the CPU shares for this Virtual Machine. |
+| cpu_threads        | UNDEF                 | Set the number of CPU threads for this Virtual Machine. (number of threads per core) |
+| disks              | UNDEF                 | List of dictionaries specifying the additional virtual machine disks. See below for more detailed description. (does not include the boot disk) |
 | nics               | UNDEF                 | List of dictionaries specifying the NICs of the virtual machine. See below for more detailed description.   |
 | custom_properties  | UNDEF                 | Properties sent to VDSM to configure various hooks.<br/> Custom properties is a list of dictionary which can have following values: <br/><i>name</i> - Name of the custom property. For example: hugepages, vhost, sap_agent, etc.<br/><i>regexp</i> - Regular expression to set for custom property.<br/><i>value</i> - Value to set for custom property. |
 | high_availability  | UNDEF                 | Whether or not the node should be set highly available. |
-| high_availability_priority | UNDEF                 | Indicates the priority of the virtual machine inside the run and migration queues. Virtual machines with higher priorities will be started and migrated before virtual machines with lower priorities. The value is an integer between 0 and 100. The higher the value, the higher the priority. If no value is passed, default value is set by oVirt/RHV engine. |
+| high_availability_priority | UNDEF                 | Indicates the priority of the virtual machine inside the run and migration queues. Virtual machines with higher priorities will be started and migrated before virtual machines with lower priorities. The value is an integer between 0 and 100. The higher the value, the higher the priority. If no value is passed, default value is set by oVirt/ RHV engine. |
 | io_threads         | UNDEF                 | Number of IO threads used by virtual machine. 0 means IO threading disabled. |
 | description        | UNDEF                 | Description of the Virtual Machine. |
 | operating_system   | UNDEF                 | Operating system of the Virtual Machine. For example: rhel_7x64 |
-| type               | UNDEF                 | Type of the Virtual Machine. Possible values: desktop, server or high_performance |
+| type               | UNDEF                 | Type of the Virtual Machine. Possible values: `desktop`, `server` or `high_performance` |
 | graphical_console  | UNDEF                 | Assign graphical console to the virtual machine.<br/>Graphical console is a dictionary which can have following values:<br/><i>headless_mode</i> - If true disable the graphics console for this virtual machine.<br/><i>protocol</i> - 'VNC', 'Spice' or both. |
 | storage_domain     | UNDEF                 | Name of the storage domain where all virtual machine disks should be created. Considered only when template is provided.|
-| state              | present               | Should the Virtual Machine be stopped, present or running.|
-| ssh_key            | UNDEF                 | SSH key to be deployed to the virtual machine. This is parameter is keep for backward compatibility and has precendece before <i>authorized_ssh_keys</i> in <i>cloud_init</i> dictionary. |
-| domain             | UNDEF                 | The domain of the virtual machine. This is parameter is keep for backward compatibility and has precendece before <i>host_name</i> in <i>cloud_init</i> dictionary.|
-| lease              | UNDEF                 | Name of the storage domain this virtual machine lease reside on. |
-| root_password      | UNDEF                 | The root password of the virtual machine. This is parameter is keep for backward compatibility and has precendece before <i>root_password</i> in <i>cloud_init</i> dictionary.|
+| state              | present               | Should the Virtual Machine be `stopped`, `present` or `running`.|
+| ssh_key            | UNDEF                 | SSH key to be deployed to the virtual machine. This is parameter is kept for backward compatibility and has precendece before <i>authorized_ssh_keys</i> in <i>cloud_init</i> dictionary. |
+| domain             | UNDEF                 | The domain of the virtual machine. This is parameter is kept for backward compatibility and has precendece before <i>host_name</i> in <i>cloud_init</i> dictionary.|
+| lease              | UNDEF                 | Name of the storage domain upon which this virtual machine lease resides. |
+| root_password      | UNDEF                 | The root password of the virtual machine. This is parameter is kept for backward compatibility and has precendece before <i>root_password</i> in <i>cloud_init</i> dictionary.|
 
-The item in `disks` list of `profile` dictionary can contain following attributes:
+The items in `disks` list of the `profile` dictionary can contain following attributes:
 
 | Name               | Default value  |                                              |
 |--------------------|----------------|----------------------------------------------|
